@@ -229,6 +229,33 @@ li:hover {
 	margin-bottom: 1em;
 }
 
+.portfolio-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 31px; /* Espace entre le titre et le bouton */
+    margin-bottom: 20px;
+}
+
+.modif-btn {
+	flex: auto;
+	border: 0px;
+	height: 38px;
+	font-family: 'Syne';
+	font-style: normal;
+	font-weight: 700;
+	font-size: 16px;
+	line-height: 19px;
+	text-align: center;
+	background-color: white;
+	color: black;
+}
+
+.modif-btn.active {
+    background: #1D6154;
+    color: white;
+}
+
 .filters {
 	display: flex;
 	align-items: center;
@@ -259,6 +286,9 @@ li:hover {
     background: #1D6154;
     color: white;
 }
+
+
+
 
 
 
@@ -331,3 +361,153 @@ footer nav ul {
 }
 
 
+/********************* Modale **********************/
+
+/* Modale */
+/* Modale */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content {
+    position: relative;
+    background-color: white;
+    margin: 5% auto;
+    padding: 40px;
+    width: 90%;
+    max-width: 630px;
+    border-radius: 10px;
+    box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
+}
+
+.modal-content h2 {
+    margin-bottom: 30px;
+    text-align: center;
+    color: #000;
+    font-size: 26px;
+}
+
+.close {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    font-size: 30px;
+    font-weight: bold;
+    color: #000;
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #666;
+}
+
+/* Galerie des projets */
+.galerie-projets {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.projet-item {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1;
+}
+
+.projet-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.btn-delete {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #000;
+    color: white;
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 2px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+}
+
+.btn-delete:hover {
+    background: #D65353;
+}
+
+/* Séparateur */
+.separator {
+    border: none;
+    border-top: 1px solid #B3B3B3;
+    margin: 30px 0;
+}
+
+/* Bouton Ajouter une photo */
+.btn-ajouter-photo {
+    width: 100%;
+    padding: 12px;
+    background: #1D6154;
+    color: white;
+    border: none;
+    border-radius: 60px;
+    font-size: 16px;
+    font-family: 'Syne', sans-serif;
+    cursor: pointer;
+}
+
+.btn-ajouter-photo:hover {
+    background: #0E2F28;
+}
+
+/* Formulaire d'ajout */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #3D3D3D;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #B1B1B1;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.btn-valider {
+    width: 100%;
+    padding: 12px;
+    background: #1D6154;
+    color: white;
+    border: none;
+    border-radius: 60px;
+    font-size: 16px;
+    font-family: 'Syne', sans-serif;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.btn-valider:hover {
+    background: #0E2F28;
+}
