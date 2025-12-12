@@ -1,4 +1,5 @@
 import { getData } from './api.js';
+import { isAuthenticated, logout } from './auth.js';
 
 async function afficherProjet(categoryFilter = 'Tous') {
     const projets = await getData();
@@ -61,7 +62,25 @@ function setActiveButton(activeBtn) {
     activeBtn.classList.add('active');
 }
 
+function updateAuthButton(){
+    const authLink = document.getElementById('auth-button');
+
+    if(isAuthenticated()){
+        authLink.textContent='Logout';
+        authLink.href='#';
+
+        authLink.addEventListener('click',(e)=>{    
+            e.preventDefault(); 
+            logout();
+        })
+    }else{
+        authLink.textContent='Login';
+        authLink.href='login.html';
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     afficherProjet('Tous');
     creerFiltres();
+    updateAuthButton();
 });
