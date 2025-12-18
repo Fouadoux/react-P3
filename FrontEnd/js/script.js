@@ -91,7 +91,7 @@ function setActiveButton(activeBtn) {
 
 /**
  * Updates the interface based on the user's authentication state
- * - If logged in: displays "Logout" and the "edit" button
+ * - If logged in: displays "Logout", the "edit" button, and an edit mode banner
  * - If not logged in: displays "Login" and category filters
  */
 function updateAuthButton() {
@@ -106,6 +106,26 @@ function updateAuthButton() {
             e.preventDefault();
             logout();
         });
+        const img1 = document.createElement('img');
+        img1.src = './assets/icons/vector-white.png';
+        img1.alt = 'Modifier';
+        img1.className = 'modif-img';
+
+
+        // Create edit mode banner
+        const banner = document.createElement('div');
+        banner.id = 'edit-mode-banner';
+
+        const bannerText = document.createElement('span');
+        bannerText.textContent = 'Mode édition';
+        banner.appendChild(img1);
+        banner.appendChild(bannerText);
+
+        // Insert banner at the beginning of body
+        document.body.prepend(banner);
+
+        // Add class to body for padding
+        document.body.classList.add('edit-mode');
 
         // Create the "edit" button to access the gallery in edit mode
         const editModeContainer = document.getElementById('edit-mode');
@@ -121,11 +141,11 @@ function updateAuthButton() {
         btn.className = 'modif-btn';
 
         // Add icon to button
-        const img = document.createElement('img');
-        img.src = './assets/icons/vector.png';
-        img.alt = 'Modifier';
-        img.className = 'modif-img';
-        btn.prepend(img);
+        const img2 = document.createElement('img');
+        img2.src = './assets/icons/vector.png';
+        img2.alt = 'Modifier';
+        img2.className = 'modif-img';
+        btn.prepend(img2);
 
         // Event to open the gallery modal
         btn.onclick = () => {
@@ -139,6 +159,16 @@ function updateAuthButton() {
         // Not logged in mode: display login and filters
         authLink.textContent = 'Login';
         authLink.href = 'login.html';
+
+        // Remove banner if it exists
+        const existingBanner = document.getElementById('edit-mode-banner');
+        if (existingBanner) {
+            existingBanner.remove();
+        }
+
+        // Remove edit mode class from body
+        document.body.classList.remove('edit-mode');
+
         creerFiltres();
     }
 }
@@ -279,9 +309,15 @@ async function ouvrirModaleAjoutProjet() {
             <form id="form-ajout-projet">
 
             <div class="form-group">
-                    <label for="image">Image</label>
-                    <input type="file" id="image" accept="image/*" required>
-                </div>
+    <label for="image">Image</label>
+    <div class="file-input-container">
+        <label for="image" class="file-input-label">
+            <img src="./assets/icons/picture-icon.png" alt="Icône image">
+            <span>+ Ajouter photo</span>
+        </label>
+        <input type="file" id="image" accept="image/*" required style="display: none;">
+    </div>
+</div>
 
                 <div class="form-group">
                     <label for="titre">Titre</label>
@@ -338,13 +374,13 @@ async function ouvrirModaleAjoutProjet() {
         try {
             // Send project to API
             await addProject(formData);
-            
+
             // Refresh gallery to display the new project
             await afficherProjet('Tous');
-            
+
             // Close modal
             modal.remove();
-            
+
             // Notify user
             alert('Project added successfully!');
         } catch (error) {
@@ -362,7 +398,7 @@ async function ouvrirModaleAjoutProjet() {
 document.addEventListener('DOMContentLoaded', () => {
     // Display all projects by default
     afficherProjet('Tous');
-    
+
     // Update interface according to authentication state
     updateAuthButton();
 });
