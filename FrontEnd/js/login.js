@@ -56,7 +56,7 @@ form.addEventListener('submit', async (e) => {
         }, 1000);
         
     } catch (error) {
-        // Traduction des messages d'erreur
+        
         let errorMsg = 'Erreur de connexion';
         
         const errorText = error.message.toLowerCase();
@@ -72,7 +72,6 @@ form.addEventListener('submit', async (e) => {
         } else if (errorText.includes('500')) {
             errorMsg = 'Erreur serveur. Veuillez réessayer plus tard.';
         } else if (error.message && !errorText.includes('incorrect')) {
-            // Si le message est déjà en français, on l'utilise
             errorMsg = error.message;
         }
         

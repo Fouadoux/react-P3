@@ -90,6 +90,7 @@ video {
 	font-size: 100%;
 	font: inherit;
 	vertical-align: baseline;
+    scroll-behavior: smooth;
 }
 
 /* HTML5 display-role reset for older browsers */
@@ -266,7 +267,6 @@ li:hover {
 
 }
 
-
 .filter-btn {
 	flex: auto;
 	border: 1px solid #1D6154;
@@ -286,12 +286,6 @@ li:hover {
     background: #1D6154;
     color: white;
 }
-
-
-
-
-
-
 
 .gallery {
 	width: 100%;
@@ -380,9 +374,12 @@ footer nav ul {
     position: relative;
     background-color: white;
     margin: 5% auto;
-    padding: 40px;
+    padding-left: 105px;
+    padding-right: 105px;
+    padding-top: 80px;
+    padding-bottom: 80px;
     width: 90%;
-    max-width: 630px;
+    max-width: 420px; 
     border-radius: 10px;
     box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
 }
@@ -392,6 +389,20 @@ footer nav ul {
     text-align: center;
     color: #000;
     font-size: 26px;
+}
+
+.back-arrow {
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    font-size: 20px;
+    color: #000;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.back-arrow:hover {
+    color: #666;
 }
 
 .close {
@@ -408,7 +419,6 @@ footer nav ul {
     color: #666;
 }
 
-/* Galerie des projets */
 .galerie-projets {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -449,14 +459,12 @@ footer nav ul {
     background: #D65353;
 }
 
-/* Séparateur */
 .separator {
     border: none;
     border-top: 1px solid #B3B3B3;
     margin: 30px 0;
 }
 
-/* Bouton Ajouter une photo */
 .btn-ajouter-photo {
     width: 100%;
     padding: 12px;
@@ -473,7 +481,6 @@ footer nav ul {
     background: #0E2F28;
 }
 
-/* Formulaire d'ajout */
 .form-group {
     margin-bottom: 20px;
 }
@@ -512,7 +519,6 @@ footer nav ul {
     background: #0E2F28;
 }
 
-/* Edit mode banner */
 #edit-mode-banner {
     width: 100%;
     height: 59px;
@@ -532,7 +538,6 @@ footer nav ul {
 	padding-left: 5px;
 }
 
-/* Add padding to body when banner is present */
 body.edit-mode {
     padding-top: 59px;
 }
@@ -548,17 +553,54 @@ body.edit-mode {
     margin-bottom: 20px;
 }
 
-.file-input-label {
+.file-input-container {
+    width: 100%;
+    height: 169px;
+    background: #E8F1F6;
+    border-radius: 3px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 10px;
-    cursor: pointer;
+    margin-bottom: 20px;
 }
 
-.file-input-label img {
-    width: 58px;
-    height: 46px;
+.file-input-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 173px;
+    padding: 10px 30px; 
+    background: #CBD6DC;
+    border-radius: 50px;
+    box-sizing: border-box;
+}
+
+.file-input-label span {
+    color: #306685;
+    font-family: 'Work Sans';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap; 
+}
+
+.file-input-label:hover {
+    background: #B8C9D1;
+}
+
+.file-input-label:hover span {
+    text-decoration: underline;
+}
+
+.file-info {
+    font-size: 10px;
+    color: #444;
+    margin: 0;
 }
 
 .file-input-label span {
@@ -570,7 +612,61 @@ body.edit-mode {
     text-decoration: underline;
 }
 
+.modal-content .form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #B1B1B1;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+    background-color: #FFFFFF;
+    cursor: pointer;
+    font-family: 'Work Sans', sans-serif;
+    color: #3D3D3D;
+}
 
+.modal-content .form-group select:focus {
+    outline: none;
+    border-color: #1D6154;
+}
+
+.modal-content .form-group select option {
+    background-color: #FFFFFF;
+    color: #3D3D3D;
+    padding: 10px;
+}
+
+.icon-image {
+    width: 58px;
+    height: 46px;
+    transition: all 0.3s ease;
+}
+
+.icon-image.preview {
+    width: 100%;
+    height: auto;
+    max-height: 169px;
+    object-fit: contain;
+}
+
+.file-input-container {
+    width: 100%;
+    height: 169px;
+    background: #E8F1F6;
+    border-radius: 3px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.file-input-container:hover {
+    background: #D8E8F1;
+}
 
 
 /***************** Login page *******************/
@@ -600,24 +696,19 @@ body.edit-mode {
 }
 
 .submit-bnt {
-
 	display: flex;
 	justify-content: center;
 	align-items: center;
-
 	background: #1D6154;
 	border-radius: 60px;
 	width: 179px;
 	height: 36px;
-
-
 	font-family: 'Syne';
 	font-style: normal;
 	font-weight: 700;
 	font-size: 14px;
 	line-height: 17px;
 	text-align: center;
-
 	color: #FFFFFF;
 	margin: 0 auto;
 

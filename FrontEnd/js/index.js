@@ -157,7 +157,7 @@ function updateAuthButton() {
 
     } else {
         // Not logged in mode: display login and filters
-        authLink.textContent = 'Login';
+        authLink.textContent = 'login';
         authLink.href = 'login.html';
 
         // Remove banner if it exists
@@ -286,45 +286,42 @@ async function ouvrirModaleGalerie() {
  */
 async function ouvrirModaleAjoutProjet() {
 
-    // Fetch categories for the select dropdown
+    // Fetch categories from the API
     const categories = await getCatagory();
-
-    // Create the modal
     const modal = document.createElement('div');
     modal.className = 'modal';
     modal.id = 'modal-ajout';
 
-    // Dynamically generate select options for categories
-    let categoriesOptions = '<option value="">Choisir...</option>';
+    // Generate select options for categories
+    let categoriesOptions = '<option value=""></option>';
     categories.forEach(cat => {
         categoriesOptions += `<option value="${cat.id}">${cat.name}</option>`;
     });
 
-    // Inject the form into the modal
+    // Create modal HTML structure
     modal.innerHTML = `
         <div class="modal-content">
+            <span class="back-arrow"><i class="fa-solid fa-arrow-left"></i></span>
             <span class="close">&times;</span>
             <h2>Ajout photo</h2>
             
             <form id="form-ajout-projet">
-
-            <div class="form-group">
-    <label for="image">Image</label>
-    <div class="file-input-container">
-        <label for="image" class="file-input-label">
-            <img src="./assets/icons/picture-icon.png" alt="Icône image">
-            <span>+ Ajouter photo</span>
-        </label>
-        <input type="file" id="image" accept="image/*" required style="display: none;">
-    </div>
-</div>
+                <div class="form-group">
+                    <label for="image">Image</label>
+                    <div class="file-input-container" id="file-container">
+                        <img src="./assets/icons/picture.png" alt="icon image" class="icon-image"/>
+                        <label for="image" class="file-input-label">
+                            <span>+ Ajouter photo</span>
+                        </label>
+                        <input type="file" id="image" accept="image/*" required style="display: none;">
+                        <p class="file-info">jpg, png : 4mo max</p>
+                    </div>
+                </div>
 
                 <div class="form-group">
                     <label for="titre">Titre</label>
                     <input type="text" id="titre" required>
                 </div>
-                
-                
                 
                 <div class="form-group">
                     <label for="categorie">Catégorie</label>
@@ -342,18 +339,63 @@ async function ouvrirModaleAjoutProjet() {
     document.body.appendChild(modal);
     modal.style.display = 'block';
 
+    // Handle back arrow to return to gallery modal
+    const backArrow = modal.querySelector('.back-arrow');
+    backArrow.addEventListener('click', () => {
+        modal.remove();
+        ouvrirModaleGalerie();
+    });
+
     // Handle closing with X button
     const closeBtn = modal.querySelector('.close');
     closeBtn.addEventListener('click', () => {
         modal.remove();
     });
 
-    // Handle closing when clicking outside the content
+    // Handle closing when clicking outside the modal content
     window.addEventListener('click', (e) => {
         if (e.target === modal) {
             modal.remove();
         }
     });
+
+    // Get DOM elements for file input handling
+    const fileContainer = modal.querySelector('#file-container');
+    const fileInput = modal.querySelector('#image');
+    const pictureIcon = modal.querySelector('.icon-image');
+    const fileInputLabel = modal.querySelector('.file-input-label');
+    const fileInfo = modal.querySelector('.file-info');
+
+    // Open file selector when clicking on container
+    fileContainer.addEventListener('click', () => {
+        fileInput.click();
+    });
+
+    // ========== IMAGE PREVIEW HANDLING ==========
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            
+            reader.onload = (event) => {
+                // Replace picture.png with imported image
+                pictureIcon.src = event.target.result;
+                pictureIcon.alt = file.name;
+                pictureIcon.style.width = '100%';
+                pictureIcon.style.height = 'auto';
+                pictureIcon.style.maxHeight = '169px';
+                pictureIcon.style.objectFit = 'contain';
+                
+                // Hide "Add photo" button
+                fileInputLabel.style.display = 'none';
+                fileInfo.style.display='none';
+            };
+            
+            reader.readAsDataURL(file);
+        }
+    });
+    // ============================================
 
     // Handle form submission
     const form = modal.querySelector('#form-ajout-projet');
@@ -365,7 +407,7 @@ async function ouvrirModaleAjoutProjet() {
         const image = document.getElementById('image').files[0];
         const categorie = document.getElementById('categorie').value;
 
-        // Create FormData to send the image file
+        // Create FormData to send file
         const formData = new FormData();
         formData.append('title', titre);
         formData.append('image', image);
@@ -374,14 +416,14 @@ async function ouvrirModaleAjoutProjet() {
         try {
             // Send project to API
             await addProject(formData);
-
-            // Refresh gallery to display the new project
+            
+            // Refresh gallery to display new project
             await afficherProjet('Tous');
-
+            
             // Close modal
             modal.remove();
-
-            // Notify user
+            
+            // Notify user of success
             alert('Project added successfully!');
         } catch (error) {
             console.error('Error:', error);
@@ -395,10 +437,20 @@ async function ouvrirModaleAjoutProjet() {
  * Executed when DOM is fully loaded
  * Initializes project display and manages authentication
  */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     // Display all projects by default
-    afficherProjet('Tous');
+    await afficherProjet('Tous');
 
     // Update interface according to authentication state
     updateAuthButton();
+
+    // Handle anchor navigation after content is loaded
+    if (window.location.hash) {
+        setTimeout(() => {
+            const target = document.querySelector(window.location.hash);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth' });
+            }
+        }, 500); // Small delay to ensure content is rendered
+    }
 });
