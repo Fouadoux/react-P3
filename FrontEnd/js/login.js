@@ -57,25 +57,9 @@ form.addEventListener('submit', async (e) => {
         
     } catch (error) {
         
-        let errorMsg = 'Erreur de connexion';
+       
         
-        const errorText = error.message.toLowerCase();
-        
-        if (errorText.includes('incorrect credentials') || 
-            errorText.includes('unauthorized') || 
-            errorText.includes('401')) {
-            errorMsg = 'Identifiant ou mot de passe incorrect';
-        } else if (errorText.includes('network') || 
-                   errorText.includes('failed to fetch') ||
-                   errorText.includes('networkerror')) {
-            errorMsg = 'Erreur de connexion au serveur. Veuillez réessayer.';
-        } else if (errorText.includes('500')) {
-            errorMsg = 'Erreur serveur. Veuillez réessayer plus tard.';
-        } else if (error.message && !errorText.includes('incorrect')) {
-            errorMsg = error.message;
-        }
-        
-        showError(errorMsg);
+        showError(error.message);
         
         submitButton.disabled = false;
         submitButton.textContent = 'Se connecter';

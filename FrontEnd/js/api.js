@@ -56,13 +56,25 @@ export async function loginUser(email, password) {
         });
         
         if (!response.ok) {
-            throw new Error('Incorrect credentials');
+            switch (response.status) {
+                case 401:
+                    throw new Error('Identifiant ou mot de passe incorrect');
+                case 404:
+                    throw new Error('Utilisateur non trouvé');
+                case 500:
+                    throw new Error('Erreur serveur. Veuillez réessayer plus tard.');
+                default:
+                    throw new Error(`Erreur de connexion (${response.status})`);
+            }
         }
         
         return await response.json();
         
     } catch (error) {
-        console.error('Error login:', error);
+        if (error.name === 'TypeError' && error.message.includes('fetch')) {
+            throw new Error('Impossible de se connecter au serveur');
+        }
+        
         throw error;
     }
 }

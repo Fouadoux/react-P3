@@ -100,7 +100,7 @@ function updateAuthButton() {
     // Check if user is authenticated
     if (isAuthenticated()) {
         // Logged in mode: display logout and edit mode
-        authLink.textContent = 'Logout';
+        authLink.textContent = 'logout';
         authLink.href = '#';
         authLink.addEventListener('click', (e) => {
             e.preventDefault();
@@ -371,31 +371,88 @@ async function ouvrirModaleAjoutProjet() {
         fileInput.click();
     });
 
-    // ========== IMAGE PREVIEW HANDLING ==========
-    fileInput.addEventListener('change', (e) => {
-        const file = e.target.files[0];
+   // ========== IMAGE PREVIEW AND VALIDATION ==========
+fileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    
+    // Reset if no file selected
+    if (!file) {
+        checkFormValidity();
+        return;
+    }
+    
+    // ===== VALIDATION DU TYPE DE FICHIER =====
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+    if (!allowedTypes.includes(file.type)) {
+        alert('Format de fichier non autorisé. Veuillez utiliser JPG ou PNG.');
+        fileInput.value = ''; // Reset input
+        checkFormValidity();
+        return;
+    }
+    
+    // ===== VALIDATION DE LA TAILLE (4 Mo max) =====
+    const maxSize = 4 * 1024 * 1024; // 4 Mo en octets
+    if (file.size > maxSize) {
+        alert('Le fichier est trop volumineux. Taille maximale : 4 Mo.');
+        fileInput.value = ''; // Reset input
+        checkFormValidity();
+        return;
+    }
+    
+    // ===== PREVIEW DE L'IMAGE SI VALIDATION OK =====
+    const reader = new FileReader();
+    
+    reader.onload = (event) => {
+        // Replace picture.png with imported image
+        pictureIcon.src = event.target.result;
+        pictureIcon.alt = file.name;
+        pictureIcon.style.width = '100%';
+        pictureIcon.style.height = 'auto';
+        pictureIcon.style.maxHeight = '169px';
+        pictureIcon.style.objectFit = 'contain';
         
-        if (file && file.type.startsWith('image/')) {
-            const reader = new FileReader();
-            
-            reader.onload = (event) => {
-                // Replace picture.png with imported image
-                pictureIcon.src = event.target.result;
-                pictureIcon.alt = file.name;
-                pictureIcon.style.width = '100%';
-                pictureIcon.style.height = 'auto';
-                pictureIcon.style.maxHeight = '169px';
-                pictureIcon.style.objectFit = 'contain';
-                
-                // Hide "Add photo" button
-                fileInputLabel.style.display = 'none';
-                fileInfo.style.display='none';
-            };
-            
-            reader.readAsDataURL(file);
-        }
-    });
+        // Hide "Add photo" button
+        fileInputLabel.style.display = 'none';
+        fileInfo.style.display = 'none';
+        
+        // Check form validity after image is selected
+        checkFormValidity();
+    };
+    
+    reader.readAsDataURL(file);
+});
+// =============================================
     // ============================================
+
+
+    const submitButton = modal.querySelector('.btn-valider');
+    const titreInput = modal.querySelector('#titre');
+    const categorieSelect= modal.querySelector('#categorie')
+
+
+    function checkFormValidity(){
+        const hasImage=fileInput.files.length >0;
+        const hasTitle=titreInput.value != '';
+        const hasCategorie=categorieSelect.value!='';
+
+        if(hasImage && hasTitle && hasCategorie){
+            submitButton.disabled = false;
+            submitButton.classList.remove('disabled');
+        }else {
+           submitButton.disabled = false;
+            submitButton.classList.add('disabled');
+        }
+    }
+
+    submitButton.disabled=true;
+    submitButton.classList.add('disabled');
+
+    
+
+    titreInput.addEventListener('input', checkFormValidity);
+    categorieSelect.addEventListener('change', checkFormValidity);
+
+
 
     // Handle form submission
     const form = modal.querySelector('#form-ajout-projet');
@@ -438,19 +495,24 @@ async function ouvrirModaleAjoutProjet() {
  * Initializes project display and manages authentication
  */
 document.addEventListener('DOMContentLoaded', async () => {
-    // Display all projects by default
-    await afficherProjet('Tous');
+    const targetHash = window.location.hash;
+    
+    // Wait for all async operations to complete
+    await Promise.all([
+        afficherProjet('Tous'),
+        // Add other async operations here if needed
+    ]);
 
-    // Update interface according to authentication state
     updateAuthButton();
 
-    // Handle anchor navigation after content is loaded
-    if (window.location.hash) {
-        setTimeout(() => {
-            const target = document.querySelector(window.location.hash);
-            if (target) {
-                target.scrollIntoView({ behavior: 'smooth' });
-            }
-        }, 500); // Small delay to ensure content is rendered
+    // Scroll after everything is done
+    if (targetHash) {
+        const target = document.querySelector(targetHash);
+        if (target) {
+            // Small delay to ensure rendering
+            setTimeout(() => {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
+        }
     }
 });
