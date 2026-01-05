@@ -2,34 +2,42 @@ import { getCatagory, getData, deleteData, addProject } from './api.js';
 import { isAuthenticated, logout } from './auth.js';
 
 /**
- * Displays projects in the gallery with optional category filtering
- * @param {string} categoryFilter - Category name to filter ('Tous' by default to display all projects)
+ * Displays projects in the gallery with optional category filtering.
+ * 
+ * This function fetches all projects from the API, clears the gallery container,
+ * then displays only the projects matching the specified category filter.
+ * Each project is displayed with its image and title in a <figure> element.
+ * 
+ * @async
+ * @param {string} [categoryFilter='Tous'] - Category name to filter projects.
+ *                                            'Tous' displays all projects without filtering.
  * @returns {Promise<void>}
+ * 
+ * @example
+ * // Display all projects
+ * await afficherProjet('Tous');
+ * 
+ * @example
+ * // Display only projects from the "Objects" category
+ * await afficherProjet('Objets');
  */
 async function afficherProjet(categoryFilter = 'Tous') {
-    // Fetch all projects from the API
     const projets = await getData();
     const container = document.querySelector('.gallery');
 
-    // Clear the container before adding new projects
     container.innerHTML = '';
 
-    // Iterate through each project and display it if it matches the filter
     projets.forEach(projet => {
         if (categoryFilter === 'Tous' || projet.category.name === categoryFilter) {
-            // Create the figure element for the project
             const projetFigure = document.createElement('figure');
 
-            // Create and configure the image
             const img = document.createElement('img');
             img.src = projet.imageUrl;
             img.alt = projet.title;
 
-            // Create the caption with the title
             const figcaption = document.createElement('figcaption');
             figcaption.textContent = projet.title;
 
-            // Assemble elements and add to container
             projetFigure.appendChild(img);
             projetFigure.appendChild(figcaption);
             container.appendChild(projetFigure);
@@ -38,16 +46,23 @@ async function afficherProjet(categoryFilter = 'Tous') {
 }
 
 /**
- * Dynamically creates filter buttons by category
- * Displays an "All" button and a button for each available category
+ * Dynamically creates filter buttons by category.
+ * 
+ * This function fetches all available categories from the API,
+ * extracts unique names, then creates an "All" button and a button
+ * for each category. The "All" button is active by default.
+ * 
+ * @async
  * @returns {Promise<void>}
+ * 
+ * @example
+ * // Create category filters
+ * await creerFiltres();
  */
 async function creerFiltres() {
-    // Fetch categories from the API
     const projets = await getCatagory();
     const categories = new Set();
 
-    // Extract unique category names
     projets.forEach(projet => {
         console.log(projet.name);
         categories.add(projet.name);
@@ -55,7 +70,6 @@ async function creerFiltres() {
 
     const filtersContainer = document.getElementById('filters');
 
-    // Create the "All" button (active by default)
     const btnTous = document.createElement('button');
     btnTous.textContent = 'Tous';
     btnTous.className = 'filter-btn active';
@@ -65,7 +79,6 @@ async function creerFiltres() {
     });
     filtersContainer.appendChild(btnTous);
 
-    // Create a button for each category
     categories.forEach(categoryName => {
         const btn = document.createElement('button');
         btn.textContent = categoryName;
@@ -79,9 +92,18 @@ async function creerFiltres() {
 }
 
 /**
- * Manages the active state of filter buttons
- * Removes the 'active' class from all buttons and adds it to the clicked button
- * @param {HTMLElement} activeBtn - The button that should become active
+ * Manages the active state of filter buttons.
+ * 
+ * Removes the 'active' class from all filter buttons and adds it
+ * only to the specified button. Visually indicates which filter
+ * is currently applied.
+ * 
+ * @param {HTMLElement} activeBtn - The button that should receive the 'active' class
+ * @returns {void}
+ * 
+ * @example
+ * const myButton = document.querySelector('.filter-btn');
+ * setActiveButton(myButton);
  */
 function setActiveButton(activeBtn) {
     const buttons = document.querySelectorAll('.filter-btn');
@@ -90,16 +112,30 @@ function setActiveButton(activeBtn) {
 }
 
 /**
- * Updates the interface based on the user's authentication state
- * - If logged in: displays "Logout", the "edit" button, and an edit mode banner
- * - If not logged in: displays "Login" and category filters
+ * Updates the user interface based on authentication state.
+ * 
+ * If the user is logged in:
+ * - Displays "logout" in the authentication button
+ * - Creates an "Edit mode" banner at the top of the page
+ * - Adds a "modify" button to open the gallery management modal
+ * - Applies the 'edit-mode' class to the body
+ * 
+ * If the user is not logged in:
+ * - Displays "login" with a link to the login page
+ * - Removes the edit mode banner
+ * - Removes the 'edit-mode' class from the body
+ * - Displays category filters
+ * 
+ * @returns {void}
+ * 
+ * @example
+ * // Update interface after login/logout
+ * updateAuthButton();
  */
 function updateAuthButton() {
     const authLink = document.getElementById('auth-button');
 
-    // Check if user is authenticated
     if (isAuthenticated()) {
-        // Logged in mode: display logout and edit mode
         authLink.textContent = 'logout';
         authLink.href = '#';
         authLink.addEventListener('click', (e) => {
@@ -111,8 +147,6 @@ function updateAuthButton() {
         img1.alt = 'Modifier';
         img1.className = 'modif-img';
 
-
-        // Create edit mode banner
         const banner = document.createElement('div');
         banner.id = 'edit-mode-banner';
 
@@ -121,13 +155,10 @@ function updateAuthButton() {
         banner.appendChild(img1);
         banner.appendChild(bannerText);
 
-        // Insert banner at the beginning of body
         document.body.prepend(banner);
 
-        // Add class to body for padding
         document.body.classList.add('edit-mode');
 
-        // Create the "edit" button to access the gallery in edit mode
         const editModeContainer = document.getElementById('edit-mode');
 
         if (!editModeContainer) {
@@ -140,14 +171,12 @@ function updateAuthButton() {
         btn.textContent = 'modifier';
         btn.className = 'modif-btn';
 
-        // Add icon to button
         const img2 = document.createElement('img');
         img2.src = './assets/icons/vector.png';
         img2.alt = 'Modifier';
         img2.className = 'modif-img';
         btn.prepend(img2);
 
-        // Event to open the gallery modal
         btn.onclick = () => {
             console.log('Opening gallery modal...');
             ouvrirModaleGalerie();
@@ -156,17 +185,14 @@ function updateAuthButton() {
         editModeContainer.appendChild(btn);
 
     } else {
-        // Not logged in mode: display login and filters
         authLink.textContent = 'login';
         authLink.href = 'login.html';
 
-        // Remove banner if it exists
         const existingBanner = document.getElementById('edit-mode-banner');
         if (existingBanner) {
             existingBanner.remove();
         }
 
-        // Remove edit mode class from body
         document.body.classList.remove('edit-mode');
 
         creerFiltres();
@@ -174,92 +200,101 @@ function updateAuthButton() {
 }
 
 /**
- * Opens a modal displaying all projects with delete functionality
- * Also provides access to the project addition form
+ * Opens a modal displaying all projects with delete functionality.
+ * 
+ * This modal allows you to:
+ * - View all gallery projects
+ * - Delete a project (with confirmation)
+ * - Access the project addition form
+ * 
+ * The modal closes by clicking the X button or clicking outside.
+ * After deleting a project, the main gallery is automatically refreshed.
+ * 
+ * Modal structure:
+ * - Title "Photo Gallery"
+ * - Grid of projects with delete button on each project
+ * - Horizontal separator
+ * - "Add a photo" button
+ * 
+ * @async
  * @returns {Promise<void>}
+ * 
+ * @example
+ * // Open the gallery management modal
+ * await ouvrirModaleGalerie();
  */
 async function ouvrirModaleGalerie() {
     console.log('Opening gallery modal');
 
-    // Fetch all projects
     const projets = await getData();
-
-    // Create the modal
     const modal = document.createElement('div');
     modal.className = 'modal';
     modal.id = 'modal-galerie';
 
-    // Generate HTML for each project with its delete button
-    let galerieHTML = '';
-    projets.forEach(projet => {
-        galerieHTML += `
-            <div class="projet-item" data-id="${projet.id}">
-                <img src="${projet.imageUrl}" alt="${projet.title}">
-                <button class="btn-delete" data-id="${projet.id}">
-                    <i class="fa-solid fa-trash-can"></i>
-                </button>
-            </div>
-        `;
-    });
-
-    // Inject content into the modal
     modal.innerHTML = `
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2>Galerie photo</h2>
-            
-            <div class="galerie-projets">
-                ${galerieHTML}
-            </div>
-            
+            <div class="galerie-projets"></div>
             <hr class="separator">
-            
             <button class="btn-ajouter-photo" id="btn-ajouter-photo">Ajouter une photo</button>
         </div>
     `;
 
-    // Add modal to DOM and display it
+    const galerieContainer = modal.querySelector('.galerie-projets');
+
+    projets.forEach(projet => {
+        const projetItem = document.createElement('div');
+        projetItem.className = 'projet-item';
+        projetItem.dataset.id = projet.id;
+
+        const img = document.createElement('img');
+        img.src = projet.imageUrl;
+        img.alt = projet.title;
+
+        const btnDelete = document.createElement('button');
+        btnDelete.className = 'btn-delete';
+        btnDelete.dataset.id = projet.id;
+        btnDelete.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
+
+        projetItem.appendChild(img);
+        projetItem.appendChild(btnDelete);
+        galerieContainer.appendChild(projetItem);
+    });
+
     document.body.appendChild(modal);
     modal.style.display = 'block';
 
-    // Handle closing with X button
     const closeBtn = modal.querySelector('.close');
     closeBtn.addEventListener('click', () => {
         modal.remove();
     });
 
-    // Handle closing when clicking outside the content
     window.addEventListener('click', (e) => {
         if (e.target === modal) {
             modal.remove();
         }
     });
 
-    // Handle project deletions
     const deleteButtons = modal.querySelectorAll('.btn-delete');
     deleteButtons.forEach(btn => {
         btn.addEventListener('click', async (e) => {
             e.preventDefault();
 
-            // Save references before async call
             const button = e.currentTarget;
             const projetId = button.getAttribute('data-id');
             const projetItem = button.closest('.projet-item');
 
             console.log('Deleting project:', projetId);
 
-            // Ask for confirmation before deletion
             if (confirm('Do you really want to delete this project?')) {
                 try {
-                    // Call API to delete the project
                     await deleteData(projetId);
 
-                    // Visually remove element from modal
                     projetItem.remove();
 
                     console.log('Project deleted');
 
-                    // Refresh main gallery
                     await afficherProjet('Tous');
 
                 } catch (error) {
@@ -270,35 +305,56 @@ async function ouvrirModaleGalerie() {
         });
     });
 
-    // Handle "Add a photo" button
     const btnAjouter = modal.querySelector('#btn-ajouter-photo');
     btnAjouter.addEventListener('click', () => {
-        modal.remove(); // Close gallery
-        ouvrirModaleAjoutProjet(); // Open addition form
+        modal.remove();
+        ouvrirModaleAjoutProjet();
     });
 }
 
 /**
- * Opens a modal with a form to add a new project
- * The form contains: image, title, and category
- * Categories are dynamically loaded from the API
+ * Opens a modal with a form to add a new project.
+ * 
+ * The form includes:
+ * - An image upload field (JPG, PNG, max 4 MB) with preview
+ * - A title field (required text)
+ * - A category dropdown (dynamically loaded from the API)
+ * 
+ * Validations performed:
+ * - File type: only JPEG, JPG, PNG
+ * - File size: maximum 4 MB
+ * - All fields are required
+ * - The "Validate" button is only active if all fields are filled
+ * 
+ * Features:
+ * - Back arrow to return to the gallery
+ * - Closes via X button or outside click
+ * - Automatic preview of selected image
+ * - Data sent via FormData
+ * - Gallery refresh after successful addition
+ * - Success/error notifications
+ * 
+ * @async
  * @returns {Promise<void>}
+ * 
+ * @example
+ * // Open the project addition form
+ * await ouvrirModaleAjoutProjet();
  */
 async function ouvrirModaleAjoutProjet() {
 
-    // Fetch categories from the API
     const categories = await getCatagory();
     const modal = document.createElement('div');
     modal.className = 'modal';
     modal.id = 'modal-ajout';
 
-    // Generate select options for categories
-    let categoriesOptions = '<option value=""></option>';
-    categories.forEach(cat => {
-        categoriesOptions += `<option value="${cat.id}">${cat.name}</option>`;
-    });
+    const categoriesOptions = '<option value=""></option>' + categories.map(cat => {
+        const option = document.createElement('option');
+        option.value = cat.id;
+        option.textContent = cat.name;
+        return option.outerHTML;
+    }).join('');
 
-    // Create modal HTML structure
     modal.innerHTML = `
         <div class="modal-content">
             <span class="back-arrow"><i class="fa-solid fa-arrow-left"></i></span>
@@ -307,7 +363,6 @@ async function ouvrirModaleAjoutProjet() {
             
             <form id="form-ajout-projet">
                 <div class="form-group">
-                    <label for="image">Image</label>
                     <div class="file-input-container" id="file-container">
                         <img src="./assets/icons/picture.png" alt="icon image" class="icon-image"/>
                         <label for="image" class="file-input-label">
@@ -329,158 +384,171 @@ async function ouvrirModaleAjoutProjet() {
                         ${categoriesOptions}
                     </select>
                 </div>
-                
+                <hr class="separator">
                 <button type="submit" class="btn-valider">Valider</button>
             </form>
         </div>
     `;
 
-    // Add modal to DOM and display it
     document.body.appendChild(modal);
     modal.style.display = 'block';
 
-    // Handle back arrow to return to gallery modal
     const backArrow = modal.querySelector('.back-arrow');
     backArrow.addEventListener('click', () => {
         modal.remove();
         ouvrirModaleGalerie();
     });
 
-    // Handle closing with X button
     const closeBtn = modal.querySelector('.close');
     closeBtn.addEventListener('click', () => {
         modal.remove();
     });
 
-    // Handle closing when clicking outside the modal content
     window.addEventListener('click', (e) => {
         if (e.target === modal) {
             modal.remove();
         }
     });
 
-    // Get DOM elements for file input handling
     const fileContainer = modal.querySelector('#file-container');
     const fileInput = modal.querySelector('#image');
     const pictureIcon = modal.querySelector('.icon-image');
     const fileInputLabel = modal.querySelector('.file-input-label');
     const fileInfo = modal.querySelector('.file-info');
 
-    // Open file selector when clicking on container
     fileContainer.addEventListener('click', () => {
         fileInput.click();
     });
 
-   // ========== IMAGE PREVIEW AND VALIDATION ==========
-fileInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    
-    // Reset if no file selected
-    if (!file) {
-        checkFormValidity();
-        return;
-    }
-    
-    // ===== VALIDATION DU TYPE DE FICHIER =====
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
-    if (!allowedTypes.includes(file.type)) {
-        alert('Format de fichier non autorisé. Veuillez utiliser JPG ou PNG.');
-        fileInput.value = ''; // Reset input
-        checkFormValidity();
-        return;
-    }
-    
-    // ===== VALIDATION DE LA TAILLE (4 Mo max) =====
-    const maxSize = 4 * 1024 * 1024; // 4 Mo en octets
-    if (file.size > maxSize) {
-        alert('Le fichier est trop volumineux. Taille maximale : 4 Mo.');
-        fileInput.value = ''; // Reset input
-        checkFormValidity();
-        return;
-    }
-    
-    // ===== PREVIEW DE L'IMAGE SI VALIDATION OK =====
-    const reader = new FileReader();
-    
-    reader.onload = (event) => {
-        // Replace picture.png with imported image
-        pictureIcon.src = event.target.result;
-        pictureIcon.alt = file.name;
-        pictureIcon.style.width = '100%';
-        pictureIcon.style.height = 'auto';
-        pictureIcon.style.maxHeight = '169px';
-        pictureIcon.style.objectFit = 'contain';
-        
-        // Hide "Add photo" button
-        fileInputLabel.style.display = 'none';
-        fileInfo.style.display = 'none';
-        
-        // Check form validity after image is selected
-        checkFormValidity();
-    };
-    
-    reader.readAsDataURL(file);
-});
-// =============================================
-    // ============================================
+    /**
+     * Handles image file selection and validation.
+     * 
+     * Validations:
+     * - Checks that file type is JPEG, JPG or PNG
+     * - Checks that size does not exceed 4 MB
+     * - Displays image preview if validations pass
+     * - Shows alerts on error
+     * - Updates form validation state
+     * 
+     * @listens fileInput#change
+     */
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
 
+        if (!file) {
+            checkFormValidity();
+            return;
+        }
+
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+        if (!allowedTypes.includes(file.type)) {
+            alert('Format de fichier non autorisé. Veuillez utiliser JPG ou PNG.');
+            fileInput.value = '';
+            checkFormValidity();
+            return;
+        }
+
+        const maxSize = 4 * 1024 * 1024;
+        if (file.size > maxSize) {
+            alert('Le fichier est trop volumineux. Taille maximale : 4 Mo.');
+            fileInput.value = '';
+            checkFormValidity();
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = (event) => {
+            pictureIcon.src = event.target.result;
+            pictureIcon.alt = file.name;
+            pictureIcon.style.width = '100%';
+            pictureIcon.style.height = 'auto';
+            pictureIcon.style.maxHeight = '169px';
+            pictureIcon.style.objectFit = 'contain';
+
+            fileInputLabel.style.display = 'none';
+            fileInfo.style.display = 'none';
+
+            checkFormValidity();
+        };
+
+        reader.readAsDataURL(file);
+    });
 
     const submitButton = modal.querySelector('.btn-valider');
     const titreInput = modal.querySelector('#titre');
-    const categorieSelect= modal.querySelector('#categorie')
+    const categorieSelect = modal.querySelector('#categorie')
 
+    /**
+     * Checks the validity of the project addition form.
+     * 
+     * Enables the validation button only if all fields are filled:
+     * - An image is selected
+     * - The title is filled in
+     * - A category is selected
+     * 
+     * If a field is empty, the button remains disabled with the 'disabled' class.
+     * 
+     * @returns {void}
+     * 
+     * @example
+     * // Check validity after modifying a field
+     * checkFormValidity();
+     */
+    function checkFormValidity() {
+        const hasImage = fileInput.files.length > 0;
+        const hasTitle = titreInput.value != '';
+        const hasCategorie = categorieSelect.value != '';
 
-    function checkFormValidity(){
-        const hasImage=fileInput.files.length >0;
-        const hasTitle=titreInput.value != '';
-        const hasCategorie=categorieSelect.value!='';
-
-        if(hasImage && hasTitle && hasCategorie){
+        if (hasImage && hasTitle && hasCategorie) {
             submitButton.disabled = false;
             submitButton.classList.remove('disabled');
-        }else {
-           submitButton.disabled = false;
+        } else {
+            submitButton.disabled = true;
             submitButton.classList.add('disabled');
         }
     }
 
-    submitButton.disabled=true;
+    submitButton.disabled = true;
     submitButton.classList.add('disabled');
-
-    
 
     titreInput.addEventListener('input', checkFormValidity);
     categorieSelect.addEventListener('change', checkFormValidity);
 
-
-
-    // Handle form submission
+    /**
+     * Handles the submission of the project addition form.
+     * 
+     * Process:
+     * 1. Prevents page reload
+     * 2. Gets field values (title, image, category)
+     * 3. Creates a FormData with project data
+     * 4. Sends data to the API via addProject()
+     * 5. Refreshes the gallery to display the new project
+     * 6. Closes the modal
+     * 7. Displays a success or error message
+     * 
+     * @listens form#submit
+     */
     const form = modal.querySelector('#form-ajout-projet');
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        // Get form values
         const titre = document.getElementById('titre').value;
         const image = document.getElementById('image').files[0];
         const categorie = document.getElementById('categorie').value;
 
-        // Create FormData to send file
         const formData = new FormData();
         formData.append('title', titre);
         formData.append('image', image);
         formData.append('category', categorie);
 
         try {
-            // Send project to API
             await addProject(formData);
-            
-            // Refresh gallery to display new project
+
             await afficherProjet('Tous');
-            
-            // Close modal
+
             modal.remove();
-            
-            // Notify user of success
+
             alert('Project added successfully!');
         } catch (error) {
             console.error('Error:', error);
@@ -490,26 +558,32 @@ fileInput.addEventListener('change', (e) => {
 }
 
 /**
- * Application entry point
- * Executed when DOM is fully loaded
- * Initializes project display and manages authentication
+ * Application entry point.
+ * 
+ * Executed when the DOM is fully loaded. Initializes the application by:
+ * 1. Retrieving the URL hash (if present)
+ * 2. Waiting for loading and displaying all projects
+ * 3. Updating the authentication button and interface based on login state
+ * 4. Performing smooth scrolling to the targeted section if a hash is present in the URL
+ * 
+ * @listens document#DOMContentLoaded
+ * 
+ * @example
+ * // The application loads automatically when the page loads
+ * // If the URL contains #portfolio, the page will scroll to that section
  */
 document.addEventListener('DOMContentLoaded', async () => {
     const targetHash = window.location.hash;
-    
-    // Wait for all async operations to complete
+
     await Promise.all([
         afficherProjet('Tous'),
-        // Add other async operations here if needed
     ]);
 
     updateAuthButton();
 
-    // Scroll after everything is done
     if (targetHash) {
         const target = document.querySelector(targetHash);
         if (target) {
-            // Small delay to ensure rendering
             setTimeout(() => {
                 target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 100);

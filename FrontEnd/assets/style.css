@@ -84,12 +84,12 @@ time,
 mark,
 audio,
 video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
     scroll-behavior: smooth;
 }
 
@@ -105,87 +105,86 @@ hgroup,
 menu,
 nav,
 section {
-	display: block;
+    display: block;
 }
 
 body {
-	line-height: 1;
+    line-height: 1;
 }
 
 ol,
 ul {
-	list-style: none;
+    list-style: none;
 }
 
 blockquote,
 q {
-	quotes: none;
+    quotes: none;
 }
 
 blockquote:before,
 blockquote:after,
 q:before,
 q:after {
-	content: '';
-	content: none;
+    content: '';
+    content: none;
 }
 
 table {
-	border-collapse: collapse;
-	border-spacing: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
 }
 
 /** end reset css**/
 body {
-	max-width: 1140px;
-	margin: auto;
-	font-family: 'Work Sans';
-	font-size: 14px;
+    max-width: 1140px;
+    margin: auto;
+    font-family: 'Work Sans';
+    font-size: 14px;
 }
 
 header {
-	display: flex;
-	justify-content: space-between;
-	margin: 50px 0
+    display: flex;
+    justify-content: space-between;
+    margin: 50px 0;
 }
 
 section {
-	margin: 50px 0
+    margin: 50px 0;
 }
 
 h1 {
-	display: flex;
-	flex-direction: column;
-	font-family: 'Syne';
-	font-size: 22px;
-	font-weight: 800;
-	color: #B1663C
+    display: flex;
+    flex-direction: column;
+    font-family: 'Syne';
+    font-size: 22px;
+    font-weight: 800;
+    color: #B1663C;
 }
 
 h1>span {
-	font-family: 'Work Sans';
-	font-size: 10px;
-	letter-spacing: 0.1em;
-	;
+    font-family: 'Work Sans';
+    font-size: 10px;
+    letter-spacing: 0.1em;
 }
 
 h2 {
-	font-family: 'Syne';
-	font-weight: 700;
-	font-size: 30px;
-	color: #1D6154
+    font-family: 'Syne';
+    font-weight: 700;
+    font-size: 30px;
+    color: #1D6154
 }
 
 nav ul {
-	display: flex;
-	align-items: center;
-	list-style-type: none;
+    display: flex;
+    align-items: center;
+    list-style-type: none;
 
 }
 
 nav li {
-	padding: 0 10px;
-	font-size: 1.2em;
+    padding: 0 10px;
+    font-size: 1.2em;
 }
 
 a {
@@ -195,61 +194,63 @@ a {
 
 
 li:hover {
-	color: #B1663C;
+    color: #B1663C;
 }
 
 #introduction {
-	display: flex;
-	align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 #introduction figure {
-	flex: 1
+    flex: 1
 }
 
 #introduction img {
-	display: block;
-	margin: auto;
-	width: 80%;
+    display: block;
+    margin: auto;
+    width: 80%;
 }
 
 #introduction article {
-	flex: 1
+    flex: 1
 }
 
 #introduction h2 {
-	margin-bottom: 1em;
+    margin-bottom: 1em;
 }
 
 #introduction p {
-	margin-bottom: 0.5em;
+    margin-bottom: 0.5em;
 }
 
 #portfolio h2 {
-	text-align: center;
-	margin-bottom: 1em;
+    text-align: center;
+    margin-bottom: 1em;
 }
 
 .portfolio-header {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 31px; /* Espace entre le titre et le bouton */
+    gap: 31px;
+    /* Espace entre le titre et le bouton */
     margin-bottom: 20px;
 }
 
 .modif-btn {
-	flex: auto;
-	border: 0px;
-	height: 38px;
-	font-family: 'Syne';
-	font-style: normal;
-	font-weight: 700;
-	font-size: 16px;
-	line-height: 19px;
-	text-align: center;
-	background-color: white;
-	color: black;
+    flex: auto;
+    border: 0px;
+    height: 38px;
+    font-family: 'Syne';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 19px;
+    text-align: center;
+    background-color: white;
+    color: black;
+    cursor: pointer;
 }
 
 .modif-btn.active {
@@ -258,28 +259,28 @@ li:hover {
 }
 
 .filters {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	margin-bottom: 50px;
-	width: 51%;
-	margin: 0 auto 50px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 50px;
+    width: 51%;
+    margin: 0 auto 50px;
 
 }
 
 .filter-btn {
-	flex: auto;
-	border: 1px solid #1D6154;
-	border-radius: 60px;
-	height: 38px;
-	font-family: 'Syne';
-	font-style: normal;
-	font-weight: 700;
-	font-size: 16px;
-	line-height: 19px;
-	text-align: center;
-	background-color: white;
-	color: #1D6154;
+    flex: auto;
+    border: 1px solid #1D6154;
+    border-radius: 60px;
+    height: 38px;
+    font-family: 'Syne';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 19px;
+    text-align: center;
+    background-color: white;
+    color: #1D6154;
 }
 
 .filter-btn.active {
@@ -288,77 +289,75 @@ li:hover {
 }
 
 .gallery {
-	width: 100%;
-	display: grid;
-	grid-template-columns: 1fr 1fr 1fr;
-	grid-column-gap: 20px;
-	grid-row-gap: 20px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-column-gap: 20px;
+    grid-row-gap: 20px;
 }
 
 .gallery img {
-	width: 100%;
+    width: 100%;
 
 }
 
 #contact {
-	width: 50%;
-	margin: auto;
+    width: 50%;
+    margin: auto;
 }
 
 #contact>* {
-	text-align: center;
+    text-align: center;
 
 }
 
 #contact h2 {
-	margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 #contact form {
-	text-align: left;
-	margin-top: 30px;
-	display: flex;
-	flex-direction: column;
+    text-align: left;
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
 }
 
 #contact input {
-	height: 50px;
-	font-size: 1.2em;
-	border: none;
-	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+    height: 50px;
+    font-size: 1.2em;
+    border: none;
+    box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
 
 #contact label {
-	margin: 2em 0 1em 0;
+    margin: 2em 0 1em 0;
 }
 
 #contact textarea {
-	border: none;
-	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+    border: none;
+    box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
 
 input[type="submit"] {
-	font-family: 'Syne';
-	font-weight: 700;
-	color: white;
-	background-color: #1D6154;
-	margin: 2em auto;
-	width: 180px;
-	text-align: center;
-	border-radius: 60px;
+    font-family: 'Syne';
+    font-weight: 700;
+    color: white;
+    background-color: #1D6154;
+    margin: 2em auto;
+    width: 180px;
+    text-align: center;
+    border-radius: 60px;
 }
 
 footer nav ul {
-	display: flex;
-	justify-content: flex-end;
-	margin: 2em
+    display: flex;
+    justify-content: flex-end;
+    margin: 2em
 }
 
 
 /********************* Modale **********************/
 
-/* Modale */
-/* Modale */
 .modal {
     display: none;
     position: fixed;
@@ -379,7 +378,7 @@ footer nav ul {
     padding-top: 80px;
     padding-bottom: 80px;
     width: 90%;
-    max-width: 420px; 
+    max-width: 420px;
     border-radius: 10px;
     box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
 }
@@ -430,11 +429,12 @@ footer nav ul {
     position: relative;
     width: 100%;
     aspect-ratio: 1;
+    margin-bottom: 15px;
 }
 
 .projet-item img {
     width: 100%;
-    height: 100%;
+    height: 102px;
     object-fit: cover;
 }
 
@@ -488,6 +488,7 @@ footer nav ul {
 .form-group label {
     display: block;
     margin-bottom: 8px;
+    font-size: 14px;
     font-weight: 500;
     color: #3D3D3D;
 }
@@ -495,11 +496,12 @@ footer nav ul {
 .form-group input,
 .form-group select {
     width: 100%;
-    padding: 12px;
-    border: 1px solid #B1B1B1;
+    padding: 16px;
     border-radius: 4px;
-    font-size: 14px;
+    font-size: 16px;
     box-sizing: border-box;
+    border: #FFFFFF;
+    box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
 
 .btn-valider {
@@ -512,7 +514,6 @@ footer nav ul {
     font-size: 16px;
     font-family: 'Syne', sans-serif;
     cursor: pointer;
-    margin-top: 20px;
 }
 
 .btn-valider:hover {
@@ -542,7 +543,7 @@ footer nav ul {
 #edit-mode-banner span {
     color: #fff;
     font-size: 16px;
-	padding-left: 5px;
+    padding-left: 5px;
 }
 
 body.edit-mode {
@@ -560,26 +561,13 @@ body.edit-mode {
     margin-bottom: 20px;
 }
 
-.file-input-container {
-    width: 100%;
-    height: 169px;
-    background: #E8F1F6;
-    border-radius: 3px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
 .file-input-label {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     width: 173px;
-    padding: 10px 30px; 
+    padding: 10px 30px;
     background: #CBD6DC;
     border-radius: 50px;
     box-sizing: border-box;
@@ -593,7 +581,7 @@ body.edit-mode {
     font-size: 14px;
     line-height: 1;
     text-align: center;
-    white-space: nowrap; 
+    white-space: nowrap;
 }
 
 .file-input-label:hover {
@@ -621,15 +609,16 @@ body.edit-mode {
 
 .modal-content .form-group select {
     width: 100%;
-    padding: 12px;
-    border: 1px solid #B1B1B1;
+    padding: 16px;
     border-radius: 4px;
-    font-size: 14px;
+    font-size: 16px;
     box-sizing: border-box;
     background-color: #FFFFFF;
     cursor: pointer;
     font-family: 'Work Sans', sans-serif;
     color: #3D3D3D;
+    border: none;
+    box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
 
 .modal-content .form-group select:focus {
@@ -678,46 +667,46 @@ body.edit-mode {
 
 /***************** Login page *******************/
 .login-container {
-	margin-top: 150px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-direction: column;
-	gap: 45px;
+    margin-top: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 45px;
 }
 
 .form-group-login {
-	display: flex;
-	flex-direction: column;
-	gap: 10px;
-	margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
 }
 
 
 .login-input {
-	width: 379px;
-	height: 51px;
-	background: #FFFFFF;
-	border: #FFFFFF;
-	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+    width: 379px;
+    height: 51px;
+    background: #FFFFFF;
+    border:none;
+    box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
 
-.submit-bnt {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	background: #1D6154;
-	border-radius: 60px;
-	width: 179px;
-	height: 36px;
-	font-family: 'Syne';
-	font-style: normal;
-	font-weight: 700;
-	font-size: 14px;
-	line-height: 17px;
-	text-align: center;
-	color: #FFFFFF;
-	margin: 0 auto;
+.submit-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #1D6154;
+    border-radius: 60px;
+    width: 179px;
+    height: 36px;
+    font-family: 'Syne';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 17px;
+    text-align: center;
+    color: #FFFFFF;
+    margin: 0 auto;
 
 }
 

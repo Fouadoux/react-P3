@@ -1,5 +1,16 @@
 /**
- * Base URL for the API
+ * API Module
+ * 
+ * This module provides functions for interacting with the backend API including:
+ * - Fetching projects and categories
+ * - User authentication
+ * - Creating and deleting projects
+ * 
+ * All authenticated requests require a valid authentication token stored in localStorage.
+ */
+
+/**
+ * Base URL for the API.
  * @constant {string}
  */
 const API_URL = 'http://localhost:5678/api';
@@ -7,9 +18,14 @@ const API_URL = 'http://localhost:5678/api';
 import { getToken } from './auth.js';
 
 /**
- * Fetches all projects/works from the API
- * @returns {Promise<Array>} Array of project objects
- * @throws {Error} If network request fails
+ * Fetches all projects/works from the API.
+ * 
+ * Retrieves the complete list of projects available in the gallery.
+ * This endpoint does not require authentication.
+ * 
+ * @async
+ * @returns {Promise<Array>} Array of project objects containing id, title, imageUrl, categoryId, userId, and category
+ * @throws {Error} If network request fails or response is not ok
  */
 export async function getData() {
   try {
@@ -23,9 +39,14 @@ export async function getData() {
 }
 
 /**
- * Fetches all categories from the API
- * @returns {Promise<Array>} Array of category objects
- * @throws {Error} If network request fails
+ * Fetches all categories from the API.
+ * 
+ * Retrieves the complete list of available project categories.
+ * This endpoint does not require authentication.
+ * 
+ * @async
+ * @returns {Promise<Array>} Array of category objects containing id and name
+ * @throws {Error} If network request fails or response is not ok
  */
 export async function getCatagory() {
   try {
@@ -39,11 +60,22 @@ export async function getCatagory() {
 }
 
 /**
- * Authenticates a user with email and password
+ * Authenticates a user with email and password.
+ * 
+ * Sends user credentials to the API for authentication.
+ * Returns user data including an authentication token upon successful login.
+ * 
+ * Error handling:
+ * - 401: Invalid credentials
+ * - 404: User not found
+ * - 500: Server error
+ * - Network errors: Connection issues
+ * 
+ * @async
  * @param {string} email - User's email address
  * @param {string} password - User's password
- * @returns {Promise<Object>} User data including authentication token
- * @throws {Error} If credentials are incorrect or request fails
+ * @returns {Promise<Object>} User data including authentication token and userId
+ * @throws {Error} If credentials are incorrect, user not found, or request fails
  */
 export async function loginUser(email, password) {
     try {
@@ -80,11 +112,15 @@ export async function loginUser(email, password) {
 }
 
 /**
- * Deletes a project by its ID
- * Requires authentication token
+ * Deletes a project by its ID.
+ * 
+ * Removes a project from the database. This is a protected endpoint
+ * that requires a valid authentication token in the Authorization header.
+ * 
+ * @async
  * @param {string|number} id - The ID of the project to delete
  * @returns {Promise<Response>} The fetch response object
- * @throws {Error} If deletion fails or user is not authenticated
+ * @throws {Error} If deletion fails, user is not authenticated, or unauthorized
  */
 export async function deleteData(id){
     try {
@@ -109,11 +145,22 @@ export async function deleteData(id){
 }
 
 /**
- * Adds a new project to the API
- * Requires authentication token
+ * Adds a new project to the API.
+ * 
+ * Creates a new project with an image, title, and category.
+ * This is a protected endpoint that requires a valid authentication token.
+ * 
+ * The FormData should contain:
+ * - image: Image file (JPEG, JPG, or PNG, max 4 MB)
+ * - title: Project title (string)
+ * - category: Category ID (number)
+ * 
+ * Note: Content-Type header is automatically set by the browser for FormData.
+ * 
+ * @async
  * @param {FormData} formData - Form data containing title, image, and category
- * @returns {Promise<Object>} The newly created project object
- * @throws {Error} If project creation fails or user is not authenticated
+ * @returns {Promise<Object>} The newly created project object with id, title, imageUrl, categoryId, and userId
+ * @throws {Error} If project creation fails, validation errors occur, or user is not authenticated
  */
 export async function addProject(formData) {
     const token = localStorage.getItem('token');
