@@ -131,7 +131,9 @@ form.addEventListener('submit', async (e) => {
         await login(email, password);
         
         showSuccess('Connexion réussie ! Redirection en cours...');
+        setTimeout(()=>{
         window.location.href = 'index.html';
+        },3000);
         
     } catch (error) {
         

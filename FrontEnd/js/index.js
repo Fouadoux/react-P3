@@ -64,7 +64,6 @@ async function creerFiltres() {
     const categories = new Set();
 
     projets.forEach(projet => {
-        console.log(projet.name);
         categories.add(projet.name);
     });
 
@@ -138,24 +137,38 @@ function updateAuthButton() {
     if (isAuthenticated()) {
         authLink.textContent = 'logout';
         authLink.href = '#';
-        authLink.addEventListener('click', (e) => {
+        
+        // Cloner pour retirer tous les anciens événements
+        const newAuthLink = authLink.cloneNode(true);
+        authLink.replaceWith(newAuthLink);
+        const currentAuthLink = document.getElementById('auth-button');
+        
+        currentAuthLink.addEventListener('click', (e) => {
             e.preventDefault();
             logout();
         });
-        const img1 = document.createElement('img');
-        img1.src = './assets/icons/vector-white.png';
-        img1.alt = 'Modifier';
-        img1.className = 'modif-img';
 
-        const banner = document.createElement('div');
-        banner.id = 'edit-mode-banner';
+        // Vérifier si la bannière existe déjà
+        let banner = document.getElementById('edit-mode-banner');
+        
+        if (!banner) {
+            // Créer la bannière seulement si elle n'existe pas
+            banner = document.createElement('div');
+            banner.id = 'edit-mode-banner';
 
-        const bannerText = document.createElement('span');
-        bannerText.textContent = 'Mode édition';
-        banner.appendChild(img1);
-        banner.appendChild(bannerText);
+            const img1 = document.createElement('img');
+            img1.src = './assets/icons/vector-white.png';
+            img1.alt = 'Modifier';
+            img1.className = 'modif-img';
 
-        document.body.prepend(banner);
+            const bannerText = document.createElement('span');
+            bannerText.textContent = 'Mode édition';
+            
+            banner.appendChild(img1);
+            banner.appendChild(bannerText);
+
+            document.body.prepend(banner);
+        }
 
         document.body.classList.add('edit-mode');
 
@@ -165,24 +178,27 @@ function updateAuthButton() {
             return;
         }
 
-        editModeContainer.innerHTML = '';
+        // Vérifier si le bouton existe déjà
+        let btn = editModeContainer.querySelector('.modif-btn');
+        
+        if (!btn) {
+            // Créer le bouton seulement s'il n'existe pas
+            btn = document.createElement('button');
+            btn.textContent = 'modifier';
+            btn.className = 'modif-btn';
 
-        const btn = document.createElement('button');
-        btn.textContent = 'modifier';
-        btn.className = 'modif-btn';
+            const img2 = document.createElement('img');
+            img2.src = './assets/icons/vector.png';
+            img2.alt = 'Modifier';
+            img2.className = 'modif-img';
+            btn.prepend(img2);
 
-        const img2 = document.createElement('img');
-        img2.src = './assets/icons/vector.png';
-        img2.alt = 'Modifier';
-        img2.className = 'modif-img';
-        btn.prepend(img2);
+            btn.onclick = () => {
+                ouvrirModaleGalerie();
+            };
 
-        btn.onclick = () => {
-            console.log('Opening gallery modal...');
-            ouvrirModaleGalerie();
-        };
-
-        editModeContainer.appendChild(btn);
+            editModeContainer.appendChild(btn);
+        }
 
     } else {
         authLink.textContent = 'login';
@@ -224,7 +240,10 @@ function updateAuthButton() {
  * await ouvrirModaleGalerie();
  */
 async function ouvrirModaleGalerie() {
-    console.log('Opening gallery modal');
+    const existingModal = document.getElementById('modal-galerie');
+    if (existingModal) {
+        existingModal.remove();
+    }
 
     const projets = await getData();
     const modal = document.createElement('div');
@@ -265,49 +284,44 @@ async function ouvrirModaleGalerie() {
     document.body.appendChild(modal);
     modal.style.display = 'block';
 
-    const closeBtn = modal.querySelector('.close');
-    closeBtn.addEventListener('click', () => {
+    function cleanupAndClose() {
+        window.removeEventListener('click', handleOutsideClick);
         modal.remove();
-    });
+    }
 
-    window.addEventListener('click', (e) => {
+    const closeBtn = modal.querySelector('.close');
+    closeBtn.addEventListener('click', cleanupAndClose);
+
+    function handleOutsideClick(e) {
         if (e.target === modal) {
-            modal.remove();
+            cleanupAndClose();
         }
-    });
+    }
+
+    window.addEventListener('click', handleOutsideClick);
 
     const deleteButtons = modal.querySelectorAll('.btn-delete');
     deleteButtons.forEach(btn => {
         btn.addEventListener('click', async (e) => {
-            e.preventDefault();
-
             const button = e.currentTarget;
             const projetId = button.getAttribute('data-id');
             const projetItem = button.closest('.projet-item');
 
-            console.log('Deleting project:', projetId);
+            try{
+            await deleteData(projetId);
 
-            if (confirm('Do you really want to delete this project?')) {
-                try {
-                    await deleteData(projetId);
+            projetItem.remove();
 
-                    projetItem.remove();
-
-                    console.log('Project deleted');
-
-                    await afficherProjet('Tous');
-
-                } catch (error) {
-                    console.error('Deletion error:', error);
-                    alert('Error during deletion');
-                }
+            await afficherProjet('Tous');
+            }catch(error){
+                 console.error('Erreur lors de la suppression:', error);
             }
         });
     });
 
     const btnAjouter = modal.querySelector('#btn-ajouter-photo');
     btnAjouter.addEventListener('click', () => {
-        modal.remove();
+        cleanupAndClose();
         ouvrirModaleAjoutProjet();
     });
 }
@@ -342,6 +356,10 @@ async function ouvrirModaleGalerie() {
  * await ouvrirModaleAjoutProjet();
  */
 async function ouvrirModaleAjoutProjet() {
+    const existingModal = document.getElementById('modal-ajout');
+    if (existingModal) {
+        existingModal.remove();
+    }
 
     const categories = await getCatagory();
     const modal = document.createElement('div');
@@ -365,7 +383,7 @@ async function ouvrirModaleAjoutProjet() {
                 <div class="form-group">
                     <div class="file-input-container" id="file-container">
                         <img src="./assets/icons/picture.png" alt="icon image" class="icon-image"/>
-                        <label for="image" class="file-input-label">
+                        <label class="file-input-label">
                             <span>+ Ajouter photo</span>
                         </label>
                         <input type="file" id="image" accept="image/*" required style="display: none;">
@@ -393,49 +411,89 @@ async function ouvrirModaleAjoutProjet() {
     document.body.appendChild(modal);
     modal.style.display = 'block';
 
-    const backArrow = modal.querySelector('.back-arrow');
-    backArrow.addEventListener('click', () => {
-        modal.remove();
-        ouvrirModaleGalerie();
-    });
-
-    const closeBtn = modal.querySelector('.close');
-    closeBtn.addEventListener('click', () => {
-        modal.remove();
-    });
-
-    window.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            modal.remove();
-        }
-    });
-
     const fileContainer = modal.querySelector('#file-container');
     const fileInput = modal.querySelector('#image');
     const pictureIcon = modal.querySelector('.icon-image');
     const fileInputLabel = modal.querySelector('.file-input-label');
     const fileInfo = modal.querySelector('.file-info');
 
-    fileContainer.addEventListener('click', () => {
-        fileInput.click();
+    let isFilePickerOpen = false;
+
+    function cleanupAndClose() {
+        fileContainer.removeEventListener('click', handleContainerClick);
+        fileInputLabel.removeEventListener('click', handleLabelClick);
+        window.removeEventListener('click', handleOutsideClick);
+        modal.remove();
+    }
+
+    const backArrow = modal.querySelector('.back-arrow');
+    backArrow.addEventListener('click', () => {
+        cleanupAndClose();
+        ouvrirModaleGalerie();
     });
 
-    /**
-     * Handles image file selection and validation.
-     * 
-     * Validations:
-     * - Checks that file type is JPEG, JPG or PNG
-     * - Checks that size does not exceed 4 MB
-     * - Displays image preview if validations pass
-     * - Shows alerts on error
-     * - Updates form validation state
-     * 
-     * @listens fileInput#change
-     */
+    const closeBtn = modal.querySelector('.close');
+    closeBtn.addEventListener('click', cleanupAndClose);
+
+    function handleOutsideClick(e) {
+        if (e.target === modal) {
+            cleanupAndClose();
+        }
+    }
+
+    window.addEventListener('click', handleOutsideClick);
+
+    function handleLabelClick(e) {
+        e.stopPropagation();
+        
+        if (isFilePickerOpen) {
+            return;
+        }
+        
+        isFilePickerOpen = true;
+        fileInput.click();
+    }
+
+    fileInputLabel.addEventListener('click', handleLabelClick);
+
+    function handleContainerClick(e) {
+        if (isFilePickerOpen) {
+            return;
+        }
+
+        if (
+            e.target.matches('.file-input-label') ||
+            e.target.matches('.file-input-label *') ||
+            e.target.matches('.file-info')
+        ) {
+            return;
+        }
+
+        isFilePickerOpen = true;
+        fileInput.click();
+    }
+
+    fileContainer.addEventListener('click', handleContainerClick);
+
+    function resetImagePreview() {
+        pictureIcon.src = './assets/icons/picture.png';
+        pictureIcon.alt = 'icon image';
+        pictureIcon.style.width = '';
+        pictureIcon.style.height = '';
+        pictureIcon.style.maxHeight = '';
+        pictureIcon.style.objectFit = '';
+        
+        fileInputLabel.style.display = '';
+        fileInfo.style.display = '';
+    }
+
     fileInput.addEventListener('change', (e) => {
+        isFilePickerOpen = false;
+
         const file = e.target.files[0];
 
         if (!file) {
+            resetImagePreview();
             checkFormValidity();
             return;
         }
@@ -444,6 +502,7 @@ async function ouvrirModaleAjoutProjet() {
         if (!allowedTypes.includes(file.type)) {
             alert('Format de fichier non autorisé. Veuillez utiliser JPG ou PNG.');
             fileInput.value = '';
+            resetImagePreview();
             checkFormValidity();
             return;
         }
@@ -452,6 +511,7 @@ async function ouvrirModaleAjoutProjet() {
         if (file.size > maxSize) {
             alert('Le fichier est trop volumineux. Taille maximale : 4 Mo.');
             fileInput.value = '';
+            resetImagePreview();
             checkFormValidity();
             return;
         }
@@ -472,33 +532,28 @@ async function ouvrirModaleAjoutProjet() {
             checkFormValidity();
         };
 
+        reader.onerror = () => {
+            alert('Erreur lors de la lecture du fichier.');
+            fileInput.value = '';
+            resetImagePreview();
+            checkFormValidity();
+        };
+
         reader.readAsDataURL(file);
+    });
+
+    fileInput.addEventListener('cancel', () => {
+        isFilePickerOpen = false;
     });
 
     const submitButton = modal.querySelector('.btn-valider');
     const titreInput = modal.querySelector('#titre');
-    const categorieSelect = modal.querySelector('#categorie')
+    const categorieSelect = modal.querySelector('#categorie');
 
-    /**
-     * Checks the validity of the project addition form.
-     * 
-     * Enables the validation button only if all fields are filled:
-     * - An image is selected
-     * - The title is filled in
-     * - A category is selected
-     * 
-     * If a field is empty, the button remains disabled with the 'disabled' class.
-     * 
-     * @returns {void}
-     * 
-     * @example
-     * // Check validity after modifying a field
-     * checkFormValidity();
-     */
     function checkFormValidity() {
         const hasImage = fileInput.files.length > 0;
-        const hasTitle = titreInput.value != '';
-        const hasCategorie = categorieSelect.value != '';
+        const hasTitle = titreInput.value.trim() !== '';
+        const hasCategorie = categorieSelect.value !== '';
 
         if (hasImage && hasTitle && hasCategorie) {
             submitButton.disabled = false;
@@ -515,27 +570,13 @@ async function ouvrirModaleAjoutProjet() {
     titreInput.addEventListener('input', checkFormValidity);
     categorieSelect.addEventListener('change', checkFormValidity);
 
-    /**
-     * Handles the submission of the project addition form.
-     * 
-     * Process:
-     * 1. Prevents page reload
-     * 2. Gets field values (title, image, category)
-     * 3. Creates a FormData with project data
-     * 4. Sends data to the API via addProject()
-     * 5. Refreshes the gallery to display the new project
-     * 6. Closes the modal
-     * 7. Displays a success or error message
-     * 
-     * @listens form#submit
-     */
     const form = modal.querySelector('#form-ajout-projet');
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const titre = document.getElementById('titre').value;
-        const image = document.getElementById('image').files[0];
-        const categorie = document.getElementById('categorie').value;
+        const titre = titreInput.value.trim();
+        const image = fileInput.files[0];
+        const categorie = categorieSelect.value;
 
         const formData = new FormData();
         formData.append('title', titre);
@@ -544,15 +585,10 @@ async function ouvrirModaleAjoutProjet() {
 
         try {
             await addProject(formData);
-
             await afficherProjet('Tous');
-
-            modal.remove();
-
-            alert('Project added successfully!');
+            cleanupAndClose();
         } catch (error) {
-            console.error('Error:', error);
-            alert('Error during addition');
+            console.error('Erreur lors de l\'ajout:', error);
         }
     });
 }
